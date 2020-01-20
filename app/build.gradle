@@ -28,6 +28,6 @@ dependencies {
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
 
-    annotationProcessor  'com.github.miqt.WandFix:wand-compiler:v1.3.7'
-    compile  'com.github.miqt.WandFix:wand:v1.3.7'
+    annotationProcessor 'com.github.miqt.WandFix:wand-compiler:v1.3.7'
+    implementation 'com.github.miqt.WandFix:wand:v1.3.7'
 }

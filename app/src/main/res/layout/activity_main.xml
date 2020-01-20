@@ -4,24 +4,53 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.demo.MainActivity">
+    tools:context="com.miqt.time.activity.MainActivity">
 
-    <com.com.empty.view.zoomimageview.ZoomImageView
-        android:id="@+id/tv_image"
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
+    <Button
+        android:id="@+id/btn_pre_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="前一天"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/rv_list"
+    <TextView
+        android:id="@+id/tv_curr_data"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:clipChildren="false"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_image">
+        android:gravity="center"
+        android:text="2019年02月13日"
+        android:textColor="#000"
+        android:textSize="18sp"
+        app:layout_constraintBottom_toBottomOf="@id/btn_pre_day"
+        app:layout_constraintLeft_toRightOf="@id/btn_pre_day"
+        app:layout_constraintRight_toLeftOf="@id/btn_next_day"
+        app:layout_constraintTop_toTopOf="@id/btn_pre_day"></TextView>
 
-    </android.support.v7.widget.RecyclerView>
+    <Button
+        android:id="@+id/btn_next_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="后一天"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ScrollView
+        android:id="@+id/sv_content"
+        android:layout_width="0dp"
+        android:padding="16dp"
+        android:layout_height="0dp"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/btn_pre_day">
+        <TextView
+            android:id="@+id/tv_oc_text"
+            android:layout_width="match_parent"
+            android:text="hello"
+            android:textColor="#000"
+            android:layout_height="wrap_content"/>
+    </ScrollView>
 </android.support.constraint.ConstraintLayout>
+
+

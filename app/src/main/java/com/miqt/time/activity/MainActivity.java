@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         if (USMUtils.getUsageEvents(0, System.currentTimeMillis(), this.getApplicationContext()) == null) {
-            USMUtils.openUSMSetting(this.getApplicationContext());
+           // USMUtils.openUSMSetting(this.getApplicationContext());
         }
     }
 

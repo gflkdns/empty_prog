@@ -15,7 +15,6 @@ import com.miqt.time.utils.AppUtils;
 import com.miqt.time.utils.USMUtils;
 
 import java.text.SimpleDateFormat;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
@@ -40,7 +39,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         setContentView(R.layout.activity_main);
 
         if (USMUtils.getUsageEvents(0, System.currentTimeMillis(), this.getApplicationContext()) == null) {
-           // USMUtils.openUSMSetting(this.getApplicationContext());
+            USMUtils.openUSMSetting(this.getApplicationContext());
         }
     }
 
@@ -102,7 +101,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
             @Override
             public int compare(UsageStats usageStats, UsageStats t1) {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    return usageStats.getTotalTimeInForeground() < t1.getTotalTimeInForeground()?1:-1;
+                    return usageStats.getTotalTimeInForeground() < t1.getTotalTimeInForeground() ? 1 : -1;
                 }
                 return 0;
             }

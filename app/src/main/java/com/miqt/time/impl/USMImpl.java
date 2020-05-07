@@ -8,6 +8,7 @@ import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Build;
 
+import com.miqt.pluginlib.annotation.HookMethod;
 import com.miqt.time.bean.USMInfo;
 import com.miqt.time.utils.ClazzUtils;
 import com.miqt.time.utils.USMUtils;
@@ -18,6 +19,7 @@ import java.util.List;
 
 
 public class USMImpl {
+    @HookMethod
     public static List<USMInfo> getUSMInfo(Context context, long start, long end) {
         try {
             if (Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {

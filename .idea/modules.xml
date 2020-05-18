@@ -3,6 +3,7 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Luomi_Demo.iml" filepath="$PROJECT_DIR$/Luomi_Demo.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MPChartLib/MPChartLib.iml" filepath="$PROJECT_DIR$/MPChartLib/MPChartLib.iml" />
       <module fileurl="file://$PROJECT_DIR$/androi_project-empty_prog.iml" filepath="$PROJECT_DIR$/androi_project-empty_prog.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
       <module fileurl="file://$PROJECT_DIR$/empty_prog.iml" filepath="$PROJECT_DIR$/empty_prog.iml" />

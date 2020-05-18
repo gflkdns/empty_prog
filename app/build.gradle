@@ -4,14 +4,14 @@ apply plugin: 'miqt.plugin.tools'
 methodhook {
     enable = true //是否启用
     //项目中的class true：全部插桩 false：只有注解插桩
-    all = true
+    all = false
 }
 android {
-    compileSdkVersion 27
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.demo"
-        minSdkVersion 19
-        targetSdkVersion 27
+        minSdkVersion 21
+        targetSdkVersion 29
         versionCode 1
         versionName "3.0.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
@@ -29,13 +29,14 @@ android {
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'com.android.support:appcompat-v7:27.+'
-    implementation 'com.android.support:design:27.1.1'
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'
     debugImplementation 'com.amitshekhar.android:debug-db:1.0.4'
-
+    implementation 'com.android.support:appcompat-v7:28.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation 'me.miqt.plugin.tools:pluginlib:0.2.0'
-
     annotationProcessor 'com.github.miqt.WandFix:wand-compiler:v1.3.7'
     implementation 'com.github.miqt.WandFix:wand:v1.3.7'
+    implementation project(path: ':MPChartLib')
 }

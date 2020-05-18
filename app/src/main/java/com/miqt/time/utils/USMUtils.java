@@ -61,7 +61,7 @@ public class USMUtils {
         }
     }
 
-    public static List<UsageStats> getUSM(long beginTime, long endTime, Context context) {
+    public static List<UsageStats> getUsageStats(long beginTime, long endTime, Context context) {
         UsageStatsManager usageStatsManager = null;
         if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
             usageStatsManager = (UsageStatsManager) context.getApplicationContext()

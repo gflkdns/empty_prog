@@ -1,141 +1,91 @@
 package com.miqt.time.activity;
 
-import android.app.usage.UsageStats;
-import android.os.Build;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.github.mikephil.charting.charts.LineChart;
+import com.github.mikephil.charting.components.XAxis;
+import com.github.mikephil.charting.data.Entry;
+import com.github.mikephil.charting.data.LineData;
+import com.github.mikephil.charting.data.LineDataSet;
+import com.github.mikephil.charting.highlight.Highlight;
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet;
+import com.github.mikephil.charting.listener.OnChartValueSelectedListener;
 import com.miqt.time.R;
 import com.miqt.time.bean.USMInfo;
-import com.miqt.time.impl.USMImpl;
-import com.miqt.time.utils.AppUtils;
-import com.miqt.time.utils.USMUtils;
+import com.miqt.time.presenter.MainPresenter;
+import com.miqt.time.utils.TimeValueFormatter;
+import com.miqt.time.view.MainView;
 
-import java.text.SimpleDateFormat;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private long startTime;
-    private long endTime;
-
-    private Button btnNext;
-    private Button btnPre;
-    private TextView tv_oc_text;
-    private TextView tv_curr_data;
-
-    private SimpleDateFormat dateFormat;
-    private SimpleDateFormat timeFormat;
-    private String currentDay;
+public class MainActivity extends AppCompatActivity implements MainView {
+    MainPresenter mainPresenter;
+    LineChart chart;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        if (USMUtils.getUsageEvents(0, System.currentTimeMillis(), this.getApplicationContext()) == null) {
-            USMUtils.openUSMSetting(this.getApplicationContext());
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        try {
-            dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            timeFormat = new SimpleDateFormat("HH:mm:ss");
-            currentDay = dateFormat.format(System.currentTimeMillis());
-
-            startTime = dateFormat.parse(currentDay).getTime();
-            endTime = startTime + TimeUnit.DAYS.toMillis(1);
-
-            btnNext = findViewById(R.id.btn_next_day);
-            btnPre = findViewById(R.id.btn_pre_day);
-            tv_oc_text = findViewById(R.id.tv_oc_text);
-            tv_curr_data = findViewById(R.id.tv_curr_data);
-
-            btnNext.setOnClickListener(this);
-            btnPre.setOnClickListener(this);
-
-            update();
-        } catch (Throwable e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public void onClick(View view) {
-        long newStartTime = 0;
-        long newEndTime = 0;
-        switch (view.getId()) {
-            case R.id.btn_next_day:
-                newStartTime = startTime + TimeUnit.DAYS.toMillis(1);
-                break;
-            case R.id.btn_pre_day:
-                newStartTime = startTime - TimeUnit.DAYS.toMillis(1);
-                break;
-            default: {
-            }
-        }
-
-        newEndTime = newStartTime + TimeUnit.DAYS.toMillis(1);
-
-        if (newEndTime - newStartTime > 0 && startTime > 0) {
-            startTime = newStartTime;
-            endTime = newEndTime;
-            currentDay = dateFormat.format(startTime);
-
-            update();
-        }
-    }
-
-    private void update() {
-        List<USMInfo> usmInfos = USMImpl.getUSMInfo(this.getApplicationContext(), startTime, endTime);
-        List<UsageStats> usageStats = USMUtils.getUSM(startTime, endTime, this.getApplicationContext());
-        Collections.sort(usageStats, new Comparator<UsageStats>() {
+        chart = findViewById(R.id.lineChart);
+        chart.getDescription().setText("近7天试用时长");
+        // background color
+        chart.setBackgroundColor(Color.WHITE);
+        chart.getAxisRight().setEnabled(false);
+        // enable touch gestures
+        chart.setTouchEnabled(true);
+        chart.getXAxis().setValueFormatter(new TimeValueFormatter());
+        chart.getXAxis().setLabelRotationAngle(0);
+        chart.getAxisLeft().setValueFormatter(new TimeValueFormatter());
+        chart.setDrawGridBackground(false);
+        // set listeners
+        chart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
             @Override
-            public int compare(UsageStats usageStats, UsageStats t1) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                    return usageStats.getTotalTimeInForeground() < t1.getTotalTimeInForeground() ? 1 : -1;
-                }
-                return 0;
+            public void onValueSelected(Entry e, Highlight h) {
+
+            }
+
+            @Override
+            public void onNothingSelected() {
+
             }
         });
-        StringBuilder builder = new StringBuilder();
 
-        if (usageStats != null) {
-            for (int i = 0; i < usageStats.size(); i++) {
-                UsageStats stats = usageStats.get(i);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP && stats.getTotalTimeInForeground() > 1000 * 60) {
-                    builder.append(AppUtils.getInstance(getApplicationContext()).getAppName(stats.getPackageName()))
-                            .append(" 总共使用：")
-                            .append(stats.getTotalTimeInForeground() / 1000f / (60))
-                            .append("分钟\n\n");
-                }
-            }
+        // enable scaling and dragging
+        chart.setDragEnabled(false);
+        chart.setScaleEnabled(false);
+        // chart.setScaleXEnabled(true);
+        // chart.setScaleYEnabled(true);
+
+        // force pinch zoom along both axis
+        chart.setPinchZoom(false);
+
+        chart.getXAxis().setPosition(XAxis.XAxisPosition.BOTTOM);
+        mainPresenter = new MainPresenter(this);
+        mainPresenter.start(this);
+    }
+
+
+    @Override
+    public void show7DayUsageData(long[] times) {
+        List<ILineDataSet> dataSets = new ArrayList<>();
+        List<Entry> yVals = new ArrayList<>();
+        for (int i = 0; i < times.length; i++) {
+            yVals.add(new Entry(i + 1, times[i]));
         }
+        LineDataSet lineDataSet = new LineDataSet(yVals, "app使用时长");
+        lineDataSet.setValueFormatter(new TimeValueFormatter());
+        lineDataSet.disableDashedLine();
+        dataSets.add(lineDataSet);
+        LineData data = new LineData(dataSets);
+        chart.setData(data);
+    }
 
-        if (usmInfos != null) {
-            builder.append("----------具体使用-----------\n");
-            for (int i = usmInfos.size() - 1; i >= 0; i--) {
-                USMInfo info = usmInfos.get(i);
-                //微信 几点到几点
-                builder.append(timeFormat.format(info.getOpenTime()))
-                        .append("-")
-                        .append(timeFormat.format(info.getCloseTime()))
-                        .append(" [")
-                        .append(info.getAppName())
-                        .append("]")
-                        .append("\n\n");
-            }
-        }
+    @Override
+    public void showTodayUsageData(List<USMInfo> usmInfos) {
 
-        tv_curr_data.setText(currentDay);
-        tv_oc_text.setText(builder.toString());
     }
 }

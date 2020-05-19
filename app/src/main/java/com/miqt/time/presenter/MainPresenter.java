@@ -28,7 +28,7 @@ public class MainPresenter implements IPresenter<MainView> {
 
     @Override
     public void start(final MainView view) {
-        mainView =view;
+        mainView = view;
         if (USMUtils.getUsageEvents(0, System.currentTimeMillis(), activity.getApplicationContext()) == null) {
             USMUtils.openUSMSetting(activity.getApplicationContext());
         }
@@ -49,9 +49,11 @@ public class MainPresenter implements IPresenter<MainView> {
                 for (int i = 0; i < 7; i++) {
                     long totalTime = 0;
                     List<UsageStats> usageStats = USMUtils.getUsageStats(startTime, endTime, activity.getApplicationContext());
-                    if (usageStats != null && !usageStats.get(i).getPackageName().contains("android")) {
+                    if (usageStats != null) {
                         for (int j = 0; j < usageStats.size(); j++) {
-                            totalTime += usageStats.get(j).getTotalTimeInForeground();
+                            if (!usageStats.get(j).getPackageName().contains("android")) {
+                                totalTime += usageStats.get(j).getTotalTimeInForeground();
+                            }
                         }
                     }
                     //倒回一天
@@ -62,28 +64,15 @@ public class MainPresenter implements IPresenter<MainView> {
                 view.show7DayUsageData(usageData);
             }
         });
-        PriorityThreadPool.getInstance().asyn().execute(new Runnable() {
-            @Override
-            public void run() {
-                //现在
-                long endTime = System.currentTimeMillis();
-                Calendar calendar = Calendar.getInstance();
-                calendar.setTime(new Date());
-                calendar.set(Calendar.HOUR_OF_DAY, 0);
-                calendar.set(Calendar.MINUTE, 0);
-                calendar.set(Calendar.SECOND, 0);
-                //今天 0点0分0秒
-                long startTime = calendar.getTimeInMillis();
-                view.showTodayUsageData(USMImpl.getUSMInfo(activity.getApplicationContext(), startTime, endTime));
-            }
-        });
     }
 
 
     public void on7DayValueSelected(UsageData usageData) {
         mainView.showDayUsageData(
-                SimpleDateFormat.getTimeInstance(DateFormat.FULL)
+                new SimpleDateFormat("yyyy-dd-MM")
                         .format(usageData.getEndTime())
                 , usageData.getUsageStats());
+        mainView.showTodayUsageData(USMImpl.getUSMInfo(activity.getApplicationContext(),
+                usageData.getStartTime(), usageData.getEndTime()));
     }
 }

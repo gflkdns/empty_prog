@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 
 public class AppUtils {
     private static volatile AppUtils instance = null;
@@ -30,6 +31,18 @@ public class AppUtils {
             PackageInfo packageInfo = packageManager.getPackageInfo(pkg, 0);
             ApplicationInfo applicationInfo = packageInfo.applicationInfo;
             return (String) applicationInfo.loadLabel(packageManager);
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public Drawable getIcon(String pkg) {
+        try {
+            PackageManager packageManager = context.getPackageManager();
+            PackageInfo packageInfo = packageManager.getPackageInfo(pkg, 0);
+            ApplicationInfo applicationInfo = packageInfo.applicationInfo;
+            return applicationInfo.loadIcon(packageManager);
         } catch (PackageManager.NameNotFoundException e) {
             e.printStackTrace();
         }
